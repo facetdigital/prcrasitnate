@@ -1,4 +1,15 @@
-# PRcrastinate
+<div align="center">
+  <img src="docs/images/logo.png" alt="PRcrastinate Logo" width="300"/>
+
+  # PRcrastinate
+
+  **Analyze GitHub Pull Request review latency metrics**
+
+  [![GitHub](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com)
+
+</div>
+
+---
 
 A Ruby script to analyze GitHub Pull Request review latency metrics and export the data to CSV files for analysis in Excel or other tools.
 
