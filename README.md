@@ -2,6 +2,21 @@
 
 A Ruby script to analyze GitHub Pull Request review latency metrics and export the data to CSV files for analysis in Excel or other tools.
 
+## Quickstart
+
+```bash
+# Get a GitHub token from https://github.com/settings/tokens (needs 'repo' scope)
+export GITHUB_TOKEN=ghp_xxxxxxxxxxxx
+
+# Run the analysis (analyzes PRs merged from August 1st until now)
+./run myorg/myrepo 2025-08-01
+
+# Or with a specific date range
+./run myorg/myrepo 2025-11-01 2025-11-30
+```
+
+This will generate two CSV files: `pr_first_review.csv` and `pr_rereview_cycles.csv`
+
 ## Overview
 
 PRcrastinate helps you understand how long it takes for PRs to get reviewed in your repository by tracking:
@@ -12,7 +27,7 @@ PRcrastinate helps you understand how long it takes for PRs to get reviewed in y
 
 ## Prerequisites
 
-- Ruby (uses only standard library, no gems required)
+- Docker
 - A GitHub Personal Access Token
 
 ## Getting a GitHub Token
@@ -39,16 +54,18 @@ The script needs read access to pull requests, reviews, and timeline events.
 
 ## Usage
 
+The `./run` script runs the analysis in a Docker container, so you don't need Ruby installed locally.
+
 ### Basic Usage
 
 ```bash
-GITHUB_TOKEN=your_token_here ruby prcrastinate.rb owner/repo YYYY-MM-DD
+GITHUB_TOKEN=your_token_here ./run owner/repo YYYY-MM-DD
 ```
 
 ### With End Date
 
 ```bash
-GITHUB_TOKEN=your_token_here ruby prcrastinate.rb owner/repo YYYY-MM-DD YYYY-MM-DD
+GITHUB_TOKEN=your_token_here ./run owner/repo YYYY-MM-DD YYYY-MM-DD
 ```
 
 ### Arguments
@@ -65,13 +82,13 @@ You can set the `GITHUB_TOKEN` environment variable in several ways:
 
 **Option 1: Inline (recommended for one-time use)**
 ```bash
-GITHUB_TOKEN=ghp_xxxxxxxxxxxx ruby prcrastinate.rb owner/repo 2025-08-01
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run owner/repo 2025-08-01
 ```
 
 **Option 2: Export in your shell session**
 ```bash
 export GITHUB_TOKEN=ghp_xxxxxxxxxxxx
-ruby prcrastinate.rb owner/repo 2025-08-01
+./run owner/repo 2025-08-01
 ```
 
 **Option 3: In your shell profile (for repeated use)**
@@ -89,12 +106,17 @@ Then reload your shell or run `source ~/.bashrc`
 
 **Analyze PRs merged in November 2025:**
 ```bash
-GITHUB_TOKEN=ghp_xxxxxxxxxxxx ruby prcrastinate.rb myorg/myrepo 2025-11-01 2025-11-30
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run myorg/myrepo 2025-11-01 2025-11-30
 ```
 
 **Analyze PRs merged from August 1st until now:**
 ```bash
-GITHUB_TOKEN=ghp_xxxxxxxxxxxx ruby prcrastinate.rb myorg/myrepo 2025-08-01
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run myorg/myrepo 2025-08-01
+```
+
+**Running without Docker (if you have Ruby installed):**
+```bash
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx ruby lib/prcrastinate.rb myorg/myrepo 2025-08-01
 ```
 
 ## Output

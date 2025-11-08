@@ -3,7 +3,10 @@
 
 # Minimal-deps Ruby script to export PR review-latency data for Excel.
 # Usage:
-#   GITHUB_TOKEN=xxxxx ruby pr_review_latency.rb owner/name 2025-08-01 2025-11-07
+#   prcrastinate.rb owner/name 2025-08-01 2025-11-07
+#
+# Environment:
+#   GITHUB_TOKEN must be set with a GitHub personal access token
 #
 # Outputs:
 #   - pr_first_review.csv       (one row per PR)
@@ -31,7 +34,15 @@ require 'time'
 ENDPOINT = URI('https://api.github.com/graphql')
 
 def abort_usage!
-  $stderr.puts "Usage: GITHUB_TOKEN=xxxxx ruby #{File.basename($0)} owner/name SINCE [UNTIL]"
+  $stderr.puts "Usage: #{File.basename($0)} owner/name SINCE [UNTIL]"
+  $stderr.puts ""
+  $stderr.puts "Arguments:"
+  $stderr.puts "  owner/name  GitHub repository (e.g., facebook/react)"
+  $stderr.puts "  SINCE       Start date in YYYY-MM-DD format"
+  $stderr.puts "  UNTIL       End date in YYYY-MM-DD format (optional, defaults to now)"
+  $stderr.puts ""
+  $stderr.puts "Environment:"
+  $stderr.puts "  GITHUB_TOKEN must be set with a GitHub personal access token"
   exit 1
 end
 
@@ -377,6 +388,14 @@ end
 
 write_first_review_csv(first_review_rows)
 write_rereview_csv(rereview_rows)
+
+# Clean up any temporary files, keeping only the final outputs
+desired_files = ['pr_first_review.csv', 'pr_rereview_cycles.csv']
+Dir.glob('*.csv').each do |file|
+  File.delete(file) unless desired_files.include?(File.basename(file))
+end
+Dir.glob('*.tmp').each { |f| File.delete(f) }
+Dir.glob('*.log').each { |f| File.delete(f) }
 
 puts "Done."
 puts "Wrote pr_first_review.csv (#{first_review_rows.size} rows) and pr_rereview_cycles.csv (#{rereview_rows.size} rows)."

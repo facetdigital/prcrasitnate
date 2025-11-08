@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Check usage
+if [ $# -lt 2 ]; then
+  echo "Usage: ./run owner/repo SINCE [UNTIL]" >&2
+  echo "" >&2
+  echo "Arguments:" >&2
+  echo "  owner/repo  GitHub repository (e.g., facebook/react)" >&2
+  echo "  SINCE       Start date in YYYY-MM-DD format" >&2
+  echo "  UNTIL       End date in YYYY-MM-DD format (optional, defaults to now)" >&2
+  echo "" >&2
+  echo "Environment:" >&2
+  echo "  GITHUB_TOKEN must be set with a GitHub personal access token" >&2
+  echo "" >&2
+  echo "Example:" >&2
+  echo "  GITHUB_TOKEN=ghp_xxxx ./run myorg/myrepo 2025-08-01" >&2
+  exit 1
+fi
+
+# Run prcrastinate.rb in a Docker container
+docker run --rm \
+  -v "$(pwd):/app" \
+  -w /app \
+  -e GITHUB_TOKEN="${GITHUB_TOKEN}" \
+  ruby:3.3 \
+  ruby lib/prcrastinate.rb "$@"
