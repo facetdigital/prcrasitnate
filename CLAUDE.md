@@ -17,21 +17,26 @@ This is a Ruby-based tool that analyzes GitHub PR review latency metrics using t
 
 **Recommended (using Docker):**
 ```bash
-GITHUB_TOKEN=xxxxx ./run owner/repo YYYY-MM-DD [YYYY-MM-DD]
+GITHUB_TOKEN=xxxxx ./run owner/repo [YYYY-MM-DD] [YYYY-MM-DD]
 ```
 
 **Direct (requires Ruby installed):**
 ```bash
-GITHUB_TOKEN=xxxxx ruby lib/prcrastinate.rb owner/repo YYYY-MM-DD [YYYY-MM-DD]
+GITHUB_TOKEN=xxxxx ruby lib/prcrastinate.rb owner/repo [YYYY-MM-DD] [YYYY-MM-DD]
 ```
 
 Arguments:
-- `owner/repo`: GitHub repository in owner/name format
-- First date: SINCE date (required) - start of analysis period
+- `owner/repo`: GitHub repository in owner/name format (required)
+- First date: SINCE date (optional) - start of analysis period, defaults to 2008-01-01
 - Second date: UNTIL date (optional) - end of analysis period, defaults to now
 
 Environment:
 - `GITHUB_TOKEN`: Required GitHub personal access token with repo access
+
+Examples:
+- `./run owner/repo` - Analyzes all merged PRs from 2008-01-01 until now
+- `./run owner/repo 2025-08-01` - Analyzes from August 1st until now
+- `./run owner/repo 2025-08-01 2025-11-30` - Analyzes specific date range
 
 The `run` script:
 - Uses `docker run` with `ruby:3.3` base image

@@ -19,7 +19,10 @@ A Ruby script to analyze GitHub Pull Request review latency metrics and export t
 # Get a GitHub token from https://github.com/settings/tokens (needs 'repo' scope)
 export GITHUB_TOKEN=ghp_xxxxxxxxxxxx
 
-# Run the analysis (analyzes PRs merged from August 1st until now)
+# Run the analysis (analyzes all merged PRs since 2008-01-01)
+./run myorg/myrepo
+
+# Or specify a start date (analyzes from August 1st until now)
 ./run myorg/myrepo 2025-08-01
 
 # Or with a specific date range
@@ -70,19 +73,20 @@ The `./run` script runs the analysis in a Docker container, so you don't need Ru
 ### Basic Usage
 
 ```bash
-GITHUB_TOKEN=your_token_here ./run owner/repo YYYY-MM-DD
+GITHUB_TOKEN=your_token_here ./run owner/repo
 ```
 
-### With End Date
+### With Date Range
 
 ```bash
+GITHUB_TOKEN=your_token_here ./run owner/repo YYYY-MM-DD
 GITHUB_TOKEN=your_token_here ./run owner/repo YYYY-MM-DD YYYY-MM-DD
 ```
 
 ### Arguments
 
 1. **Repository** (required): GitHub repository in `owner/name` format (e.g., `facebook/react`)
-2. **SINCE date** (required): Start date for analysis in `YYYY-MM-DD` format
+2. **SINCE date** (optional): Start date for analysis in `YYYY-MM-DD` format (defaults to `2008-01-01`)
 3. **UNTIL date** (optional): End date for analysis in `YYYY-MM-DD` format (defaults to current time)
 
 The script analyzes PRs that were **merged** between the SINCE and UNTIL dates.
@@ -115,9 +119,9 @@ Then reload your shell or run `source ~/.bashrc`
 
 ## Examples
 
-**Analyze PRs merged in November 2025:**
+**Analyze all merged PRs (from 2008-01-01 until now):**
 ```bash
-GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run myorg/myrepo 2025-11-01 2025-11-30
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run myorg/myrepo
 ```
 
 **Analyze PRs merged from August 1st until now:**
@@ -125,8 +129,14 @@ GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run myorg/myrepo 2025-11-01 2025-11-30
 GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run myorg/myrepo 2025-08-01
 ```
 
+**Analyze PRs merged in November 2025:**
+```bash
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx ./run myorg/myrepo 2025-11-01 2025-11-30
+```
+
 **Running without Docker (if you have Ruby installed):**
 ```bash
+GITHUB_TOKEN=ghp_xxxxxxxxxxxx ruby lib/prcrastinate.rb myorg/myrepo
 GITHUB_TOKEN=ghp_xxxxxxxxxxxx ruby lib/prcrastinate.rb myorg/myrepo 2025-08-01
 ```
 

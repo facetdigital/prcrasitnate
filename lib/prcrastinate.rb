@@ -3,10 +3,14 @@
 
 # Minimal-deps Ruby script to export PR review-latency data for Excel.
 # Usage:
-#   prcrastinate.rb owner/name 2025-08-01 2025-11-07
+#   prcrastinate.rb owner/name [SINCE] [UNTIL]
 #
 # Environment:
 #   GITHUB_TOKEN must be set with a GitHub personal access token
+#
+# Arguments:
+#   SINCE defaults to 2008-01-01 if not provided
+#   UNTIL defaults to now if not provided
 #
 # Outputs:
 #   - pr_first_review.csv       (one row per PR)
@@ -34,11 +38,11 @@ require 'time'
 ENDPOINT = URI('https://api.github.com/graphql')
 
 def abort_usage!
-  $stderr.puts "Usage: #{File.basename($0)} owner/name SINCE [UNTIL]"
+  $stderr.puts "Usage: #{File.basename($0)} owner/name [SINCE] [UNTIL]"
   $stderr.puts ""
   $stderr.puts "Arguments:"
   $stderr.puts "  owner/name  GitHub repository (e.g., facebook/react)"
-  $stderr.puts "  SINCE       Start date in YYYY-MM-DD format"
+  $stderr.puts "  SINCE       Start date in YYYY-MM-DD format (optional, defaults to 2008-01-01)"
   $stderr.puts "  UNTIL       End date in YYYY-MM-DD format (optional, defaults to now)"
   $stderr.puts ""
   $stderr.puts "Environment:"
@@ -47,8 +51,8 @@ def abort_usage!
 end
 
 REPO = ARGV[0] or abort_usage!
-SINCE = (ARGV[1] ? Time.parse(ARGV[1]) : (puts("Provide SINCE date"); abort_usage!))
-UNTIL_T = (ARGV[2] ? Time.parse(ARGV[2]) : Time.now.utc)
+SINCE = ARGV[1] ? Time.parse(ARGV[1]) : Time.parse('2008-01-01')
+UNTIL_T = ARGV[2] ? Time.parse(ARGV[2]) : Time.now.utc
 
 TOKEN = ENV['GITHUB_TOKEN']
 abort("Missing GITHUB_TOKEN env var") unless TOKEN && !TOKEN.empty?
